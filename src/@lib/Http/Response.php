@@ -104,8 +104,7 @@ class Response
         $httpStatus   = 200,
         $httpVersion  = '1.1',
         $headers      = []
-    )
-    {
+    ) {
         $this->content     = $content;
         $this->httpStatus  = $httpStatus;
         $this->httpVersion = $httpVersion;
