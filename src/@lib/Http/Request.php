@@ -7,6 +7,25 @@ class Request
     private $server;
     private $request;
     private $files;
+    private $inputReader;
+
+    /**
+     * @return mixed
+     */
+    public function getInputReader()
+    {
+        return $this->inputReader;
+    }
+
+    /**
+     * @param mixed $inputReader
+     * @return Request
+     */
+    public function setInputReader(InputReaderInterface $inputReader)
+    {
+        $this->inputReader = $inputReader;
+        return $this;
+    }
 
     /**
      * @return mixed
@@ -62,19 +81,19 @@ class Request
         return $this;
     }
 
-    public function __construct(array $server = [], array $request = [], array $files = [])
-    {
-        $this->server  = $server;
-        $this->request = $request;
-        $this->files   = $files;
+    public function __construct(
+        array $server                     = [],
+        array $request                    = [],
+        array $files                      = [],
+        InputReaderInterface $inputReader = null
+    ) {
+        $this->server      = $server;
+        $this->request     = $request;
+        $this->files       = $files;
+        $this->inputReader = $inputReader;
     }
 
-    public function getRawInput()
-    {
-        return file_get_contents('php://input');
-    }
-
-    public function _createFromGlobals()
+    public function loadFromGlobals()
     {
         $server = isset($_SERVER)  ? $_SERVER  : [];
         $files  = isset($_FILES)   ? $_FILES   : [];
@@ -83,26 +102,18 @@ class Request
         if (isset($server['CONTENT_TYPE']) && preg_match('/json/i', $server['CONTENT_TYPE'])) {
             $data = array_merge($_GET, $_COOKIE);
 
-            $content = $this->getRawInput();
+            $content = $this->inputReader->read();
 
             if ($content) {
                 $data = array_merge(json_decode($content, true), $data);
             }
         }
 
-        $request = new static();
-        $request->setServer($server);
-        $request->setFiles($files);
-        $request->setRequest($data);
+        $this->server  = $server;
+        $this->files   = $files;
+        $this->request = $data;
 
-        return $request;
-    }
-
-    public static function createFromGlobals()
-    {
-        $request = new static();
-        $request = $request->_createFromGlobals();
-        return $request;
+        return $this;
     }
 
     public function get($index, $default = null)
