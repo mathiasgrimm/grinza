@@ -95,23 +95,19 @@ class Request
 
     public function loadFromGlobals()
     {
-        $server = isset($_SERVER)  ? $_SERVER  : [];
-        $files  = isset($_FILES)   ? $_FILES   : [];
-        $data   = isset($_REQUEST) ? $_REQUEST : [];
+        $this->server  = isset($_SERVER)  ? $_SERVER  : [];
+        $this->files   = isset($_FILES)   ? $_FILES   : [];
+        $this->request = isset($_REQUEST) ? $_REQUEST : [];
 
-        if (isset($server['CONTENT_TYPE']) && preg_match('/json/i', $server['CONTENT_TYPE'])) {
-            $data = array_merge($_GET, $_COOKIE);
+        if ($this->isJson()) {
+            $this->request = array_merge($_GET, $_COOKIE);
 
             $content = $this->inputReader->read();
 
             if ($content) {
-                $data = array_merge(json_decode($content, true), $data);
+                $this->request = array_merge(json_decode($content, true), $this->request);
             }
         }
-
-        $this->server  = $server;
-        $this->files   = $files;
-        $this->request = $data;
 
         return $this;
     }
@@ -119,5 +115,14 @@ class Request
     public function get($index, $default = null)
     {
         return ArrayPath::get($this->request, $index, $default);
+    }
+
+    public function isJson()
+    {
+        if (isset($this->server['CONTENT_TYPE']) && preg_match('/json/i', $this->server['CONTENT_TYPE'])) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

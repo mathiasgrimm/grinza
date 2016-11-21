@@ -38,6 +38,7 @@ class RequestTest extends TestCase
     /**
      * @test
      * @runInSeparateProcess
+     * @backupGlobals
      */
     public function it_creates_from_globals_for_non_json()
     {
@@ -55,6 +56,8 @@ class RequestTest extends TestCase
 
     /**
      * @test
+     * @runInSeparateProcess
+     * @backupGlobals
      */
     public function it_creates_from_globals_for_json()
     {
@@ -77,6 +80,8 @@ class RequestTest extends TestCase
 
     /**
      * @test
+     * @backupGlobals
+     * @runInSeparateProcess
      */
     public function it_gets_raw_input_when_it_is_null()
     {
@@ -88,5 +93,20 @@ class RequestTest extends TestCase
         $request->loadFromGlobals();
 
         $this->assertEquals([], $request->getRequest());
+    }
+
+    /**
+     * @test
+     */
+    public function is_json_works()
+    {
+        $request = new Request();
+        $this->assertFalse($request->isJson());
+
+        $request = new Request(['CONTENT_TYPE' => 'application/json']);
+        $this->assertTrue($request->isJson());
+
+        $request = new Request(['CONTENT_TYPE' => 'json']);
+        $this->assertTrue($request->isJson());
     }
 }
