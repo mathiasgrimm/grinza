@@ -44,7 +44,10 @@ class MatcherTest extends TestCase
         $match = $matcher->match($routeCollection, '/user/1/en', 'GET');
 
         $this->assertSame($r2, $match->getRoute());
-        $this->assertEquals(['1', 'en'], $match->getParams());
+        $this->assertEquals([
+            'id'     => '1',
+            'locale' => 'en'
+        ], $match->getParams());
     }
 
     /**

@@ -22,13 +22,22 @@ class Matcher
                 $match = new Match(null, $route);
                 break;
             } else {
-                $regexPattern = '#^' . preg_replace('/\\\\{(.*?)\\\\}/', '([^\/]+)', preg_quote($pattern)) . '$#';
+                preg_match_all('~{([^\/]+)}~', $pattern, $namedParams);
+                $namedParams = $namedParams[1];
+
+                $regexPattern = preg_replace('~\{([^\/]+)\}~', '(?P<${1}>[^\/]+)', $pattern);
+                $regexPattern = "~^{$regexPattern}$~";
 
                 if (preg_match($regexPattern, $urn, $params)) {
                     // removing the first entry which is the full string.
                     array_shift($params);
 
-                    $match = new Match($params, $route);
+                    $paramsTmp = [];
+                    foreach ($namedParams as $paramName) {
+                        $paramsTmp[$paramName] = $params[$paramName];
+                    }
+
+                    $match = new Match($paramsTmp, $route);
                     break;
                 }
             }
