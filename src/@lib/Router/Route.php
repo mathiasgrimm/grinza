@@ -1,17 +1,40 @@
 <?php namespace Grinza\Router;
 
+use Closure;
+
 class Route
 {
     private $name;
     private $httpMethod;
     private $pattern;
-    private $controller;
-    private $controllerMethod;
+    private $action;
+
+    /**
+     * @return null|string|Closure
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    /**
+     * @param mixed $action
+     * @return Route
+     */
+    public function setAction($action): self
+    {
+        if (!$this->isActionClosure($action) && !$this->isActionMethod($action)) {
+            throw new \InvalidArgumentException('Action must be either a string (controller@method) or a closure');
+        }
+
+        $this->action = $action;
+        return $this;
+    }
 
     /**
      * @return mixed
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -20,7 +43,7 @@ class Route
      * @param mixed $name
      * @return Route
      */
-    public function setName($name)
+    public function setName(?string $name): self
     {
         $this->name = $name;
         return $this;
@@ -29,7 +52,7 @@ class Route
     /**
      * @return mixed
      */
-    public function getHttpMethod()
+    public function getHttpMethod(): ?string
     {
         return $this->httpMethod;
     }
@@ -38,7 +61,7 @@ class Route
      * @param mixed $httpMethod
      * @return Route
      */
-    public function setHttpMethod($httpMethod)
+    public function setHttpMethod(?string $httpMethod): self
     {
         $this->httpMethod = $httpMethod;
         return $this;
@@ -47,7 +70,7 @@ class Route
     /**
      * @return mixed
      */
-    public function getPattern()
+    public function getPattern(): ?string
     {
         return $this->pattern;
     }
@@ -56,68 +79,33 @@ class Route
      * @param mixed $pattern
      * @return Route
      */
-    public function setPattern($pattern)
+    public function setPattern(?string $pattern): self
     {
         $this->pattern = $pattern;
         return $this;
     }
 
     /**
-     * @return mixed
-     */
-    public function getController()
-    {
-        return $this->controller;
-    }
-
-    /**
-     * @param mixed $controller
-     * @return Route
-     */
-    public function setController($controller)
-    {
-        $this->controller = $controller;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getControllerMethod()
-    {
-        return $this->controllerMethod;
-    }
-
-    /**
-     * @param mixed $controllerMethod
-     * @return Route
-     */
-    public function setControllerMethod($controllerMethod)
-    {
-        $this->controllerMethod = $controllerMethod;
-        return $this;
-    }
-
-    /**
-     * Route constructor
-     * @param null $name
-     * @param null $httpMethod
-     * @param null $pattern
-     * @param null $controller
-     * @param null $controllerMethod
+     * Route constructor.
+     * @param null|string $name
+     * @param null|string $httpMethod
+     * @param null|string $pattern
+     * @param null|string $action
      */
     public function __construct(
-        $name             = null,
-        $httpMethod       = null,
-        $pattern          = null,
-        $controller       = null,
-        $controllerMethod = null
-    ) {
-        $this->name             = $name;
-        $this->httpMethod       = $httpMethod;
-        $this->pattern          = $pattern;
-        $this->controller       = $controller;
-        $this->controllerMethod = $controllerMethod;
+        string $name       = null,
+        string $httpMethod = null,
+        string $pattern    = null,
+        string $action     = null
+    )
+    {
+        $this->name       = $name;
+        $this->httpMethod = $httpMethod;
+        $this->pattern    = $pattern;
+
+        if ($action) {
+            $this->setAction($action);
+        }
     }
 
     /**
@@ -126,10 +114,9 @@ class Route
      * it will return ['id', 'other']
      *
      * If there are not named parameters it will return null
-     *
      * @return null|array
      */
-    public function getNamedParams()
+    public function getNamedParams(): ?array
     {
         $params = null;
 
@@ -140,5 +127,23 @@ class Route
         }
 
         return $params;
+    }
+
+    public function isActionClosure($action = null): bool
+    {
+        if (!func_num_args()) {
+            $action = $this->action;
+        }
+
+        return is_a($action, Closure::class);
+    }
+
+    public function isActionMethod($action = null): bool
+    {
+        if (!func_num_args()) {
+            $action = $this->action;
+        }
+
+        return (is_string($action) && strstr($action, '@'));
     }
 }

@@ -20,12 +20,8 @@ class RouteCollection
             throw new \InvalidArgumentException('Route does not have pattern and therefore cant be added');
         }
 
-        if (!$route->getController()) {
-            throw new \InvalidArgumentException('Route does not have controller and therefore cant be added');
-        }
-
-        if (!$route->getControllerMethod()) {
-            throw new \InvalidArgumentException('Route does not have controllerMethod and therefore cant be added');
+        if (!$route->getAction()) {
+            throw new \InvalidArgumentException('Route does not have an action and therefore cant be added');
         }
     }
 
