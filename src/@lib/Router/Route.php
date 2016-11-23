@@ -120,6 +120,15 @@ class Route
         $this->controllerMethod = $controllerMethod;
     }
 
+    /**
+     * Return the list of named params.
+     * eg.: for a route with a pattern equals to /user/{id}/{other}
+     * it will return ['id', 'other']
+     *
+     * If there are not named parameters it will return null
+     *
+     * @return null|array
+     */
     public function getNamedParams()
     {
         $params = null;

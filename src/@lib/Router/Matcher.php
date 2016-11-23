@@ -24,8 +24,16 @@ class Matcher
                 $match = new Match(null, $route);
                 break;
             } else {
+                // gets ['id', 'theme', 'other']
                 $namedParams = $route->getNamedParams($route);
 
+                // replaces {id} for (?P<id>[^\/]+)
+                // so for each name param it will replace it, as in
+                // /user/{id}/{theme}/show
+                // will be /user/(?P<id>[^\/]+)/(?P<theme>[^\/]+)/show
+                // the ?P<theme> is just to give a name for the param found, and the name is exactly the name of
+                // the named param
+                // and the [^\/] means anything that is not a / (forward slash)
                 $regexPattern = preg_replace('~\{([^\/]+)\}~', '(?P<${1}>[^\/]+)', $pattern);
                 $regexPattern = "~^{$regexPattern}$~";
 
@@ -33,6 +41,7 @@ class Matcher
                     // removing the first entry which is the full string.
                     array_shift($params);
 
+                    // mapping the values found in the url with the name params
                     $paramsTmp = [];
                     foreach ($namedParams as $paramName) {
                         $paramsTmp[$paramName] = $params[$paramName];
