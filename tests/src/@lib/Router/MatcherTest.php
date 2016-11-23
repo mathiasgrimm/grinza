@@ -17,8 +17,8 @@ class MatcherTest extends TestCase
     public function it_matches_exact_route()
     {
         $routeCollection = new RouteCollection([
-            $r1 = new Route('user.index', 'GET', '/user'      , 'UserController', 'index'),
-            $r2 = new Route('user.show' , 'GET', '/user/{id}' , 'UserController', 'show'),
+            $r1 = new Route('user.index', 'GET', '/user'      , 'UserController@index'),
+            $r2 = new Route('user.show' , 'GET', '/user/{id}' , 'UserController@show'),
         ]);
 
         $matcher = $this->getMatcher();
@@ -35,8 +35,8 @@ class MatcherTest extends TestCase
     public function it_matches_pattern()
     {
         $routeCollection = new RouteCollection([
-            $r1 = new Route('user.index', 'GET', '/user'               , 'UserController', 'index'),
-            $r2 = new Route('user.show' , 'GET', '/user/{id}/{locale}' , 'UserController', 'show'),
+            $r1 = new Route('user.index', 'GET', '/user'               , 'UserController@index'),
+            $r2 = new Route('user.show' , 'GET', '/user/{id}/{locale}' , 'UserController@show'),
         ]);
 
         $matcher = $this->getMatcher();
@@ -56,8 +56,8 @@ class MatcherTest extends TestCase
     public function it_returns_null_when_no_match_is_found()
     {
         $routeCollection = new RouteCollection([
-            $r1 = new Route('user.index', 'GET', '/user'               , 'UserController', 'index'),
-            $r2 = new Route('user.show' , 'GET', '/user/{id}/{locale}' , 'UserController', 'show'),
+            $r1 = new Route('user.index', 'GET', '/user'               , 'UserController@index'),
+            $r2 = new Route('user.show' , 'GET', '/user/{id}/{locale}' , 'UserController@show'),
         ]);
 
         $matcher = $this->getMatcher();

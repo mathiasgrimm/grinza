@@ -7,6 +7,7 @@
         }
     ],
     "require": {
+        "php": ">=7.1",
         "vlucas/phpdotenv": "^2.4",
         "mathiasgrimm/arraypath": "^2.0",
         "mathiasgrimm/x": "^1.4"
