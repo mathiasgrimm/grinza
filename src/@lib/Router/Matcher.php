@@ -29,7 +29,7 @@ class Matcher
 
                 // this dynamically creates the regex that will find the named params in the url
                 // replaces {id} with (?P<id>[^\/]+)
-                // so for each name param it will replace it, as in
+                // so for each named param it will replace it, as in
                 // /user/{id}/{theme}/show
                 // will be /user/(?P<id>[^\/]+)/(?P<theme>[^\/]+)/show
                 // the ?P<theme> is just to give a name for the param found, and the name is exactly the name of
