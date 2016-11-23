@@ -121,7 +121,7 @@ class Route
     }
 
     /**
-     * Return the list of named params.
+     * Returns the list of named params.
      * eg.: for a route with a pattern equals to /user/{id}/{other}
      * it will return ['id', 'other']
      *
