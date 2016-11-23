@@ -65,4 +65,20 @@ class MatcherTest extends TestCase
         $match = $matcher->match($routeCollection, '/user/1/en/1', 'GET');
         $this->assertNull($match);
     }
+
+    /**
+     * @test
+     */
+    public function test()
+    {
+        $routeCollection = new RouteCollection([
+            $r1 = new Route('user.index', 'GET', '/user'               , 'UserController', 'index'),
+//            $r2 = new Route('user.show' , 'GET', '/user/{id}/{locale}' , 'UserController', 'show'),
+        ]);
+
+        $matcher = $this->getMatcher();
+
+        $match = $matcher->match($routeCollection, '/', 'GET');
+        $this->assertNull($match);
+    }
 }

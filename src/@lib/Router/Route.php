@@ -119,4 +119,17 @@ class Route
         $this->controller       = $controller;
         $this->controllerMethod = $controllerMethod;
     }
+
+    public function getNamedParams()
+    {
+        $params = null;
+
+        preg_match_all('~\{([^\/]+)\}~', $this->pattern, $namedParams);
+
+        if (isset($namedParams[1]) && !empty($namedParams[1])) {
+            $params = $namedParams[1];
+        }
+
+        return $params;
+    }
 }

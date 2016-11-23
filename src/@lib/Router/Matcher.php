@@ -18,12 +18,13 @@ class Matcher
         foreach ($routes as $route) {
             $pattern = trim($route->getPattern(), '/');
 
+            // if route is exaclty the same. For example if the route was defined as /user
+            // and the url is /user, they will match and no regex is needed
             if ($pattern == $urn) {
                 $match = new Match(null, $route);
                 break;
             } else {
-                preg_match_all('~{([^\/]+)}~', $pattern, $namedParams);
-                $namedParams = $namedParams[1];
+                $namedParams = $route->getNamedParams($route);
 
                 $regexPattern = preg_replace('~\{([^\/]+)\}~', '(?P<${1}>[^\/]+)', $pattern);
                 $regexPattern = "~^{$regexPattern}$~";

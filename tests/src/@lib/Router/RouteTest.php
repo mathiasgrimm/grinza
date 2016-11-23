@@ -1,5 +1,7 @@
 <?php
 
+use Grinza\Router\Route;
+
 class RouteTest extends TestCase
 {
     /**
@@ -41,12 +43,28 @@ class RouteTest extends TestCase
         $controller       = 'App\\Controllers\\SomeController';
         $controllerMethod = 'show';
 
-        $route = new Grinza\Router\Route($name, $httpMethod, $pattern, $controller, $controllerMethod);
+        $route = new Route($name, $httpMethod, $pattern, $controller, $controllerMethod);
 
         $this->assertEquals($name             , $route->getName());
         $this->assertEquals($httpMethod       , $route->getHttpMethod());
         $this->assertEquals($pattern          , $route->getPattern());
         $this->assertEquals($controller       , $route->getController());
         $this->assertEquals($controllerMethod , $route->getControllerMethod());
+    }
+
+    /**
+     * @test
+     */
+    public function it_get_named_params_when_they_exist()
+    {
+        $name             = 'index.show';
+        $httpMethod       = 'GET';
+        $pattern          = '/{locale}/user/{id}';
+        $pattern          = '/user';
+        $controller       = 'App\\Controllers\\SomeController';
+        $controllerMethod = 'show';
+
+        $route = new Route($name, $httpMethod, $pattern, $controller, $controllerMethod);
+//        pd($route->getNamedParams());
     }
 }
