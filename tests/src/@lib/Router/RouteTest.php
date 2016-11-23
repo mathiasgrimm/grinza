@@ -55,16 +55,30 @@ class RouteTest extends TestCase
     /**
      * @test
      */
-    public function it_get_named_params_when_they_exist()
+    public function it_gets_named_params_when_they_exist()
     {
         $name             = 'index.show';
         $httpMethod       = 'GET';
         $pattern          = '/{locale}/user/{id}';
-        $pattern          = '/user';
         $controller       = 'App\\Controllers\\SomeController';
         $controllerMethod = 'show';
 
         $route = new Route($name, $httpMethod, $pattern, $controller, $controllerMethod);
-//        pd($route->getNamedParams());
+        $this->assertEquals(['locale', 'id'], $route->getNamedParams());
+    }
+
+    /**
+     * @test
+     */
+    public function it_gets_null_when_there_is_no_named_params()
+    {
+        $name             = 'index.show';
+        $httpMethod       = 'GET';
+        $pattern          = '/{user';
+        $controller       = 'App\\Controllers\\SomeController';
+        $controllerMethod = 'show';
+
+        $route = new Route($name, $httpMethod, $pattern, $controller, $controllerMethod);
+        $this->assertNull($route->getNamedParams());
     }
 }
