@@ -148,7 +148,6 @@ class RouteTest extends TestCase
     public function isActionMethod_works()
     {
         $r = new Route();
-        $r = new Route();
         $this->assertFalse($r->isActionMethod());
         $this->assertFalse($r->isActionMethod(function () {}));
 
