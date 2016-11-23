@@ -28,7 +28,7 @@ class Matcher
                 $namedParams = $route->getNamedParams($route);
 
                 // this dynamically creates the regex that will find the named params in the url
-                // replaces {id} for (?P<id>[^\/]+)
+                // replaces {id} with (?P<id>[^\/]+)
                 // so for each name param it will replace it, as in
                 // /user/{id}/{theme}/show
                 // will be /user/(?P<id>[^\/]+)/(?P<theme>[^\/]+)/show
