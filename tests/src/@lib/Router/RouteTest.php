@@ -21,12 +21,12 @@ class RouteTest extends TestCase
 
         $route->setName('name');
         $route->setAction('Controller@method');
-        $route->setHttpMethod('httpMethod');
+        $route->setHttpMethods(['httpMethod']);
         $route->setPattern('pattern');
 
         $this->assertEquals('name'              , $route->getName());
         $this->assertEquals('Controller@method' , $route->getAction());
-        $this->assertEquals('httpMethod'        , $route->getHttpMethod());
+        $this->assertEquals(['httpMethod']      , $route->getHttpMethods());
         $this->assertEquals('pattern'           , $route->getPattern());
     }
 
@@ -35,7 +35,7 @@ class RouteTest extends TestCase
      */
     public function setAction_validates()
     {
-        $error = 'Action must be either a string (controller@method) or a closure';
+        $error = 'Action must be either a string (controller@method), a closure or null';
         $route = new Grinza\Router\Route(null);
         $route->setAction('Controller@method');
         $route->setAction(function () {});
@@ -83,14 +83,14 @@ class RouteTest extends TestCase
     public function constructor_sets_variables_correctly()
     {
         $name       = 'index.show';
-        $httpMethod = 'GET';
+        $httpMethod = ['GET'];
         $pattern    = '/index';
         $action     = 'App\\Controllers\\SomeController@show';
 
         $route = new Route($name, $httpMethod, $pattern, $action);
 
         $this->assertEquals($name       , $route->getName());
-        $this->assertEquals($httpMethod , $route->getHttpMethod());
+        $this->assertEquals($httpMethod , $route->getHttpMethods());
         $this->assertEquals($pattern    , $route->getPattern());
         $this->assertEquals($action     , $route->getAction());
     }
@@ -101,7 +101,7 @@ class RouteTest extends TestCase
     public function it_gets_named_params_when_they_exist()
     {
         $name       = 'index.show';
-        $httpMethod = 'GET';
+        $httpMethod = ['GET'];
         $pattern    = '/{locale}/user/{id}';
         $action     = 'App\\Controllers\\SomeController@show';
 
@@ -115,7 +115,7 @@ class RouteTest extends TestCase
     public function it_gets_null_when_there_is_no_named_params()
     {
         $name       = 'index.show';
-        $httpMethod = 'GET';
+        $httpMethod = ['GET'];
         $pattern    = '/{user';
         $action     = 'App\\Controllers\\SomeController@show';
 

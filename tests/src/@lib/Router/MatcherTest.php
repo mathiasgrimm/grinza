@@ -17,13 +17,13 @@ class MatcherTest extends TestCase
     public function it_matches_exact_route()
     {
         $routeCollection = new RouteCollection([
-            $r1 = new Route('user.index', 'GET', '/user'      , 'UserController@index'),
-            $r2 = new Route('user.show' , 'GET', '/user/{id}' , 'UserController@show'),
+            $r1 = new Route('user.index', ['GET'], '/user'      , 'UserController@index'),
+            $r2 = new Route('user.show' , ['GET'], '/user/{id}' , 'UserController@show'),
         ]);
 
         $matcher = $this->getMatcher();
 
-        $match = $matcher->match($routeCollection, '/user', 'GET');
+        $match = $matcher->match($routeCollection, '/user', ['GET']);
 
         $this->assertSame($r1, $match->getRoute());
         $this->assertNull($match->getParams());
@@ -35,13 +35,13 @@ class MatcherTest extends TestCase
     public function it_matches_pattern()
     {
         $routeCollection = new RouteCollection([
-            $r1 = new Route('user.index', 'GET', '/user'               , 'UserController@index'),
-            $r2 = new Route('user.show' , 'GET', '/user/{id}/{locale}' , 'UserController@show'),
+            $r1 = new Route('user.index', ['GET'], '/user'               , 'UserController@index'),
+            $r2 = new Route('user.show' , ['GET'], '/user/{id}/{locale}' , 'UserController@show'),
         ]);
 
         $matcher = $this->getMatcher();
 
-        $match = $matcher->match($routeCollection, '/user/1/en', 'GET');
+        $match = $matcher->match($routeCollection, '/user/1/en', ['GET']);
 
         $this->assertSame($r2, $match->getRoute());
         $this->assertEquals([
@@ -56,13 +56,13 @@ class MatcherTest extends TestCase
     public function it_returns_null_when_no_match_is_found()
     {
         $routeCollection = new RouteCollection([
-            $r1 = new Route('user.index', 'GET', '/user'               , 'UserController@index'),
-            $r2 = new Route('user.show' , 'GET', '/user/{id}/{locale}' , 'UserController@show'),
+            $r1 = new Route('user.index', ['GET'], '/user'               , 'UserController@index'),
+            $r2 = new Route('user.show' , ['GET'], '/user/{id}/{locale}' , 'UserController@show'),
         ]);
 
         $matcher = $this->getMatcher();
 
-        $match = $matcher->match($routeCollection, '/user/1/en/1', 'GET');
+        $match = $matcher->match($routeCollection, '/user/1/en/1', ['GET']);
         $this->assertNull($match);
     }
 }
