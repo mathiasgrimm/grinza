@@ -15,4 +15,7 @@ before_install:
 install:
   - travis_retry composer update --prefer-dist --no-interaction --prefer-stable --no-suggest
 
-script: vendor/bin/phpunit
+script: vendor/bin/phpunit --no-coverage
+
+after_success:
+  - travis_retry php vendor/bin/coveralls -v
