@@ -18,4 +18,4 @@ install:
 script: vendor/bin/phpunit --no-coverage
 
 after_success:
-  - travis_retry php vendor/bin/coveralls -v
+  - travis_retry php vendor/bin/coveralls -v -x ./build/logs/clover.xml
