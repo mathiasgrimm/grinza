@@ -14,8 +14,10 @@ before_install:
 
 install:
   - travis_retry composer update --prefer-dist --no-interaction --prefer-stable --no-suggest
+  - mkdir -p build/logs
 
 script: vendor/bin/phpunit --no-coverage
 
 after_success:
   - travis_retry php vendor/bin/coveralls -v -x ./build/logs/clover.xml
+  - ls -ltrah build/logs
