@@ -11,6 +11,9 @@ cache:
 
 before_install:
   - travis_retry composer self-update
+  - export CI_BUILD_NUMBER="$TRAVIS_BUILD_NUMBER"
+  - export CI_PULL_REQUEST="$TRAVIS_PULL_REQUEST"
+  - export CI_BRANCH="$TRAVIS_BRANCH"
 
 install:
   - travis_retry composer update --prefer-dist --no-interaction --prefer-stable --no-suggest
