@@ -6,3 +6,15 @@
 
 Experimental custom PHP Framework for studying modern object oriented concepts like S.O.L.I.D, clean code, etc
 
+
+
+# Study Notes
+
+## The "Router Handler" Case
+
+The Route can either have a controller or a closure as it's handler.
+
+Initially I wrote the Route thinking only in using a controller and therefore it had two arguments in the constructor
+related to it ($controller, $controllerMethod). 
+Later I decided to also support closures and then the `Open Close Principle` seemed to have being at risk.
+To be continued...

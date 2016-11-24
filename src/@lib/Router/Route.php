@@ -1,11 +1,12 @@
 <?php namespace Grinza\Router;
 
 use Closure;
+use InvalidArgumentException;
 
 class Route
 {
     private $name;
-    private $httpMethod;
+    private $httpMethods = [];
     private $pattern;
     private $action;
 
@@ -23,8 +24,8 @@ class Route
      */
     public function setAction($action): self
     {
-        if (!$this->isActionClosure($action) && !$this->isActionMethod($action)) {
-            throw new \InvalidArgumentException('Action must be either a string (controller@method) or a closure');
+        if (null !== $action && !$this->isActionClosure($action) && !$this->isActionMethod($action)) {
+            throw new InvalidArgumentException('Action must be either a string (controller@method), a closure or null');
         }
 
         $this->action = $action;
@@ -50,20 +51,20 @@ class Route
     }
 
     /**
-     * @return mixed
+     * @return null|array
      */
-    public function getHttpMethod(): ?string
+    public function getHttpMethods(): array
     {
-        return $this->httpMethod;
+        return $this->httpMethods;
     }
 
     /**
-     * @param mixed $httpMethod
+     * @param mixed $httpMethods
      * @return Route
      */
-    public function setHttpMethod(?string $httpMethod): self
+    public function setHttpMethods(array $httpMethods): self
     {
-        $this->httpMethod = $httpMethod;
+        $this->httpMethods = $httpMethods;
         return $this;
     }
 
@@ -88,24 +89,21 @@ class Route
     /**
      * Route constructor.
      * @param null|string $name
-     * @param null|string $httpMethod
+     * @param null|array|string $httpMethods
      * @param null|string $pattern
      * @param null|string $action
      */
     public function __construct(
-        string $name       = null,
-        string $httpMethod = null,
-        string $pattern    = null,
-        string $action     = null
+        string $name        = null,
+        array  $httpMethods = [],
+        string $pattern     = null,
+        string $action      = null
     )
     {
-        $this->name       = $name;
-        $this->httpMethod = $httpMethod;
-        $this->pattern    = $pattern;
-
-        if ($action) {
-            $this->setAction($action);
-        }
+        $this->setName($name);
+        $this->setPattern($pattern);
+        $this->setHttpMethods($httpMethods);
+        $this->setAction($action);
     }
 
     /**

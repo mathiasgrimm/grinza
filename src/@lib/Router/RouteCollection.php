@@ -2,17 +2,18 @@
 
 class RouteCollection
 {
-    private $routes;
+    private $routes = [];
 
     /**
      * Checks if the route has all required attributes
      *
      * @param Route $route
      * @throws \InvalidArgumentException
+     * @return self
      */
-    public function validate(Route $route)
+    public function validate(Route $route): self
     {
-        if (!$route->getHttpMethod()) {
+        if (!$route->getHttpMethods()) {
             throw new \InvalidArgumentException('Route does not have httpMethod and therefore cant be added');
         }
 
@@ -23,44 +24,71 @@ class RouteCollection
         if (!$route->getAction()) {
             throw new \InvalidArgumentException('Route does not have an action and therefore cant be added');
         }
+
+        return $this;
     }
 
-    public function addRoute(Route $route)
+    /**
+     * @param Route $route
+     * @return RouteCollection
+     */
+    public function addRoute(Route $route): self
     {
         $this->validate($route);
 
-        if ($name = $route->getName()) {
-            $this->routes[$route->getHttpMethod()][$name] = $route;
-        } else {
-            $this->routes[$route->getHttpMethod()][] = $route;
+        foreach ($route->getHttpMethods() as $httpMethod) {
+            if ($name = $route->getName()) {
+                $this->routes[$httpMethod][$name] = $route;
+            } else {
+                $this->routes[$httpMethod][] = $route;
+            }
         }
 
         return $this;
     }
 
-    public function addRoutes(array $routes)
+    /**
+     * @param array $routes
+     * @return RouteCollection
+     */
+    public function addRoutes(array $routes): self
     {
         foreach ($routes as $route) {
             $this->addRoute($route);
         }
+
+        return $this;
     }
 
+    /**
+     * @param Route $route
+     * @return $this
+     */
     public function deleteRoute(Route $route)
     {
-        if ($name = $route->getName()) {
-            unset($this->routes[$route->getHttpMethod()][$route->getName()]);
-        } else {
-            throw new \InvalidArgumentException('Route does not have name and therefore cant be deleted');
+        if (!$route->getHttpMethods() && !$route->getName()) {
+            throw new \InvalidArgumentException('Route does not have name and httpMethods and therefore cant be deleted');
+        }
+
+        foreach ($route->getHttpMethods() as $httpMethod) {
+            unset($this->routes[$httpMethod][$route->getName()]);
         }
 
         return $this;
     }
 
-    public function getRoutes()
+    /**
+     * @return array
+     */
+    public function getRoutes(): array
     {
         return $this->routes;
     }
 
+    /**
+     * RouteCollection constructor.
+     * @param array|null $routes
+     */
     public function __construct(array $routes = null)
     {
         if ($routes) {
