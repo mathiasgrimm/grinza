@@ -97,5 +97,14 @@ class RouterTest extends TestCase
             ]
         ], $router->getRouteCollection()->getRoutes());
 
+        $router->getRouteCollection()->deleteRoute($r3);
+
+        $this->assertEquals([
+            'GET' => [
+                'user.show' => $r1,
+                'user.edit' => $r2
+            ]
+        ], $router->getRouteCollection()->getRoutes());
+
     }
 }
