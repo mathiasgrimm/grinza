@@ -72,6 +72,11 @@ class RouteCollection
 
         foreach ($route->getHttpMethods() as $httpMethod) {
             unset($this->routes[$httpMethod][$route->getName()]);
+
+            // if it was the last element, delete also the index GET|POST etc
+            if (count($this->routes[$httpMethod]) == 0) {
+                unset($this->routes[$httpMethod]);
+            }
         }
 
         return $this;

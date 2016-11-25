@@ -61,8 +61,8 @@ class RouteCollectionTest extends TestCase
         $routes = new RouteCollection();
 
         $routes->addRoutes([
-            $r1 = new Route(null, ['GET'], '/user', 'UserController@index'),
-            $r2 = new Route(null, ['GET'], '/user/{id}', 'UserController@show'),
+            $r1 = new Route(null, ['GET'], '/user'      , 'UserController@index'),
+            $r2 = new Route(null, ['GET'], '/user/{id}' , 'UserController@show'),
         ]);
 
         $values = array_values($routes->getRoutes()['GET']);
@@ -77,8 +77,8 @@ class RouteCollectionTest extends TestCase
     public function constructor_sets_correctly()
     {
         $routes = new RouteCollection([
-            $r1 = new Route(null, ['GET'], '/user', 'UserController@index'),
-            $r2 = new Route(null, ['GET'], '/user/{id}', 'UserController@show'),
+            $r1 = new Route(null, ['GET'], '/user'      , 'UserController@index'),
+            $r2 = new Route(null, ['GET'], '/user/{id}' , 'UserController@show'),
         ]);
 
         $values = array_values($routes->getRoutes()['GET']);
@@ -93,8 +93,8 @@ class RouteCollectionTest extends TestCase
     public function delete_works_when_route_has_name()
     {
         $routes = new RouteCollection([
-            $r1 = new Route('user.index', ['GET'], '/user', 'UserController@index'),
-            $r2 = new Route('user.show', ['GET'], '/user/{id}', 'UserController@show'),
+            $r1 = new Route('user.index' , ['GET'] , '/user'      , 'UserController@index'),
+            $r2 = new Route('user.show'  , ['GET'] , '/user/{id}' , 'UserController@show'),
         ]);
 
         $routes->deleteRoute($r1);
@@ -111,12 +111,56 @@ class RouteCollectionTest extends TestCase
     public function delete_works_when_route_has_no_name()
     {
         $routes = new RouteCollection([
-            $r1 = new Route('user.index', ['GET'], '/user', 'UserController@index'),
-            $r2 = new Route('user.show', ['GET'], '/user/{id}', 'UserController@show'),
+            $r1 = new Route('user.index' , ['GET'], '/user'      , 'UserController@index'),
+            $r2 = new Route('user.show'  , ['GET'], '/user/{id}' , 'UserController@show'),
         ]);
 
         $routes->deleteRoute(new Route());
         $this->fail();
+    }
+
+    /**
+     * @test
+     */
+    public function after_deleting_all_routes_getRoutes_is_an_empty_array()
+    {
+        $routes = new RouteCollection([
+            $r1 = new Route('user.index', ['GET'], '/user'      , 'UserController@index'),
+            $r2 = new Route('user.show' , ['GET'], '/user/{id}' , 'UserController@show'),
+        ]);
+
+        $routes->deleteRoute($r1);
+        $routes->deleteRoute($r2);
+
+        $this->assertEquals([], $routes->getRoutes());
+    }
+
+    /**
+     * @test
+     */
+    public function adding_same_route_twice_should_create_a_single_entry()
+    {
+        $r1 = new Route('user.index', ['GET'], '/user', 'UserController@index');
+
+        $routes = new RouteCollection();
+        $routes->addRoute($r1);
+        $routes->addRoute($r1);
+
+        $expected = [
+            'GET' => [
+                'user.index' => $r1
+            ]
+        ];
+
+        $this->assertEquals($expected, $routes->getRoutes());
+
+        // via constructor
+        $routes = new RouteCollection([
+            $r1,
+            $r1
+        ]);
+
+        $this->assertEquals($expected, $routes->getRoutes());
     }
 
 }

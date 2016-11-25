@@ -98,8 +98,7 @@ class Route
         array  $httpMethods = [],
         string $pattern     = null,
         string $action      = null
-    )
-    {
+    ) {
         $this->setName($name);
         $this->setPattern($pattern);
         $this->setHttpMethods($httpMethods);
