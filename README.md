@@ -13,6 +13,3 @@ introduces some ifs, tests etc...
 
 # Minimal requirements
 This projects requires at least PHP 7.1
-
-
-
