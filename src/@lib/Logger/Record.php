@@ -9,7 +9,7 @@ class Record
     private $level;
     private $message;
     private $context;
-    private $extra;
+    private $extra = [];
 
     /**
      * @return mixed
@@ -51,6 +51,17 @@ class Record
         return $this->extra;
     }
 
+    public function addExtra($value, $name = null): self
+    {
+        if ($name) {
+            $this->extra[$name] = $value;
+        } else {
+            $this->extra[] = $value;
+        }
+
+        return $this;
+    }
+
     public function __construct(string $message, \DateTime $dateTime = null, $level = LogLevel::DEBUG, array $context = [], array $extra = [])
     {
         if (!$dateTime) {
@@ -61,7 +72,10 @@ class Record
         $this->message  = $message;
         $this->context  = $context;
         $this->level    = $level;
-        $this->extra    = $extra;
+
+        foreach ($extra as $k => $v) {
+            $this->addExtra($v, $k);
+        }
     }
 
     public function toArray()
