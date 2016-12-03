@@ -82,6 +82,7 @@ EXPECTED;
 
         $this->deleteFile();
 
+        $record  = new Record($message, $now, $level, $context, $extra);
         $handler = new FileHandler('/tmp/test.out', new JsonFormatter(false), [
             new HostnameProcessor(),
             new ClosureProcessor(function (Record $record) {
@@ -93,8 +94,9 @@ EXPECTED;
 
         $handler->handle($record);
 
-        $expected = '{"dateTime":{"date":"' . $nowSt . '","timezone_type":' . $tzType . ',"timezone":"' . $tz . '"},"message":"hey","context":{"conter_key":"context_value"},"level":"emergency","extra":{"extra_key":"extra_value","0":"' . $hostname . '","hash":"' . $hash . '","1":"7faf154ce003"}}';
+        $expected = '{"dateTime":{"date":"' . $nowSt . '","timezone_type":' . $tzType . ',"timezone":"' . $tz . '"},"message":"hey","context":{"conter_key":"context_value"},"level":"emergency","extra":{"extra_key":"extra_value","0":"' . $hostname . '","hash":"' . $hash . '"}}';
         $actual   = file_get_contents('/tmp/test.out');
+
         $this->assertEquals($expected, $actual);
     }
 
