@@ -41,13 +41,16 @@ class FileHandlerTest extends TestCase
         ]);
 
 
-        $message = 'hey';
-        $hash    = md5($message);
-        $now     = new DateTime();
-        $nowSt   = $now->format('Y-m-d H:i:s.u');
-        $level   = LogLevel::EMERGENCY;
-        $context = ['conter_key' => 'context_value'];
-        $extra   = ['extra_key'  => 'extra_value'];
+        $message  = 'hey';
+        $hash     = md5($message);
+        $now      = new DateTime();
+        $tzType   = ((array) $now->getTimezone())['timezone_type'];
+        $tz       = $now->getTimezone()->getName();
+        $hostname = gethostname();
+        $nowSt    = $now->format('Y-m-d H:i:s.u');
+        $level    = LogLevel::EMERGENCY;
+        $context  = ['conter_key' => 'context_value'];
+        $extra    = ['extra_key'  => 'extra_value'];
 
         $record = new Record($message, $now, $level, $context, $extra);
 
@@ -59,8 +62,8 @@ class FileHandlerTest extends TestCase
 {
     "dateTime": {
         "date": "{$nowSt}",
-        "timezone_type": 3,
-        "timezone": "UTC"
+        "timezone_type": {$tzType},
+        "timezone": "{$tz}"
     },
     "message": "hey",
     "context": {
@@ -69,7 +72,7 @@ class FileHandlerTest extends TestCase
     "level": "emergency",
     "extra": {
         "extra_key": "extra_value",
-        "0": "7faf154ce003",
+        "0": "{$hostname}",
         "hash": "{$hash}"
     }
 }
@@ -90,7 +93,7 @@ EXPECTED;
 
         $handler->handle($record);
 
-        $expected = '{"dateTime":{"date":"' . $nowSt . '","timezone_type":3,"timezone":"UTC"},"message":"hey","context":{"conter_key":"context_value"},"level":"emergency","extra":{"extra_key":"extra_value","0":"7faf154ce003","hash":"' . $hash . '","1":"7faf154ce003"}}';
+        $expected = '{"dateTime":{"date":"' . $nowSt . '","timezone_type":' . $tzType . ',"timezone":"' . $tz . '"},"message":"hey","context":{"conter_key":"context_value"},"level":"emergency","extra":{"extra_key":"extra_value","0":"' . $hostname . '","hash":"' . $hash . '","1":"7faf154ce003"}}';
         $actual   = file_get_contents('/tmp/test.out');
         $this->assertEquals($expected, $actual);
     }
