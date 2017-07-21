@@ -11,13 +11,14 @@ class ClosureFormatterTest extends TestCase
      */
     public function it_works()
     {
+        $channel = 'test';
         $message = 'hey';
         $now     = new DateTime();
         $level   = LogLevel::EMERGENCY;
         $context = ['conter_key' => 'context_value'];
         $extra   = ['extra_key'  => 'extra_value'];
 
-        $record = new Record($message, $now, $level, $context, $extra);
+        $record = new Record($channel, $message, $now, $level, $context, $extra);
         $formatter = new ClosureFormatter(function (Record $record) {
             return '->' . $record->getMessage() . '<-';
         });

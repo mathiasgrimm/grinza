@@ -6,15 +6,15 @@ use Grinza\Logger\Record;
 
 class FileHandler implements HandlerInterface
 {
-    private $fileName;
+    protected $fileName;
 
     /**
      * @var FormatterInterface
      */
-    private $formatter;
+    protected $formatter;
 
     /** @var  ProcessorInterface [] */
-    private $processors = [];
+    protected $processors = [];
 
     /**
      * @return mixed
@@ -66,8 +66,12 @@ class FileHandler implements HandlerInterface
      */
     public function setProcessors(array $processors): FileHandler
     {
-        foreach ($processors as $processor) {
-            $this->addProcessors($processor);
+        if ($processors) {
+            foreach ($processors as $processor) {
+                $this->addProcessors($processor);
+            }
+        } else {
+            $this->processors = [];
         }
 
         return $this;
@@ -103,7 +107,12 @@ class FileHandler implements HandlerInterface
             }
         }
 
-        $output = $this->formatter->format($record);
+        $this->write($record);
+    }
+
+    protected function write(Record $record)
+    {
+        $output = $this->formatter->format($record) . PHP_EOL;
 
         file_put_contents($this->fileName, $output, FILE_APPEND);
     }

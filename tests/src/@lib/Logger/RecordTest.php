@@ -10,22 +10,25 @@ class RecordTest extends TestCase
      */
     public function constructor_works()
     {
-        $record = new Record('hey');
+        $record = new Record('testing', 'hey');
 
+        $this->assertEquals('testing'           , $record->getChannel());
         $this->assertEquals('hey'               , $record->getMessage());
         $this->assertEquals(LogLevel::DEBUG     , $record->getLevel());
         $this->assertInstanceOf(DateTime::class , $record->getDatetime());
         $this->assertEquals([]                  , $record->getContext());
         $this->assertEquals([]                  , $record->getExtra());
 
+        $channel = 'testing';
         $message = 'hey';
         $now     = new DateTime();
         $level   = LogLevel::EMERGENCY;
         $context = ['conter_key' => 'context_value'];
         $extra   = ['extra_key'  => 'extra_value'];
 
-        $record = new Record($message, $now, $level, $context, $extra);
+        $record = new Record($channel, $message, $now, $level, $context, $extra);
 
+        $this->assertEquals($channel , $record->getChannel());
         $this->assertEquals($message , $record->getMessage());
         $this->assertEquals($level   , $record->getLevel());
         $this->assertSame($now       , $record->getDatetime());
@@ -38,15 +41,17 @@ class RecordTest extends TestCase
      */
     public function toArray_works()
     {
+        $channel = 'testing';
         $message = 'hey';
         $now     = new DateTime();
         $level   = LogLevel::EMERGENCY;
         $context = ['conter_key' => 'context_value'];
         $extra   = ['extra_key'  => 'extra_value'];
 
-        $record = new Record($message, $now, $level, $context, $extra);
+        $record = new Record($channel, $message, $now, $level, $context, $extra);
 
         $this->assertEquals([
+            'channel'  => $channel,
             'message'  => $message,
             'dateTime' => $now,
             'level'    => $level,
@@ -60,25 +65,17 @@ class RecordTest extends TestCase
      */
     public function toJson_works()
     {
+        $channel = 'testing';
         $message = 'hey';
         $now     = new DateTime();
         $level   = LogLevel::EMERGENCY;
         $context = ['conter_key' => 'context_value'];
         $extra   = ['extra_key'  => 'extra_value'];
 
-        $record = new Record($message, $now, $level, $context, $extra);
+        $record = new Record($channel, $message, $now, $level, $context, $extra);
 
         $json = json_encode([
-            'dateTime' => $now,
-            'message'  => $message,
-            'context'  => $context,
-            'level'    => $level,
-            'extra'    => $extra
-        ], JSON_PRETTY_PRINT);
-
-        $this->assertEquals($json, $record->toJson());
-
-        $json = json_encode([
+            'channel'  => $channel,
             'dateTime' => $now,
             'message'  => $message,
             'context'  => $context,
@@ -86,7 +83,7 @@ class RecordTest extends TestCase
             'extra'    => $extra
         ], 0);
 
-        $this->assertEquals($json, $record->toJson(false));
+        $this->assertEquals($json, $record->toJson());
     }
 
     /**
@@ -94,13 +91,14 @@ class RecordTest extends TestCase
      */
     public function addExtra_works()
     {
+        $channel = 'testing';
         $message = 'hey';
         $now     = new DateTime();
         $level   = LogLevel::EMERGENCY;
         $context = ['conter_key' => 'context_value'];
         $extra   = ['extra_key'  => 'extra_value'];
 
-        $record = new Record($message, $now, $level, $context, $extra);
+        $record = new Record($channel, $message, $now, $level, $context, $extra);
 
         $record->addExtra('value1', 'name1');
         $record->addExtra('value2');

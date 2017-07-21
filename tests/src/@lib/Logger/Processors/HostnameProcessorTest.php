@@ -11,13 +11,14 @@ class FileLineProcessorTest extends TestCase
      */
     public function it_processes()
     {
+        $channel = 'testing';
         $message = 'hey';
         $now     = new DateTime();
         $level   = LogLevel::EMERGENCY;
         $context = ['conter_key' => 'context_value'];
         $extra   = ['extra_key'  => 'extra_value'];
 
-        $record = new Record($message, $now, $level, $context, $extra);
+        $record = new Record($channel, $message, $now, $level, $context, $extra);
 
         $hostname  = gethostname();
         $processor = new HostnameProcessor();

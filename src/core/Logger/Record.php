@@ -5,11 +5,30 @@ use Psr\Log\LogLevel;
 
 class Record
 {
+    private $channel;
     private $dateTime;
     private $level;
     private $message;
     private $context;
     private $extra = [];
+
+    /**
+     * @return mixed
+     */
+    public function getChannel()
+    {
+        return $this->channel;
+    }
+
+    /**
+     * @param mixed $channel
+     * @return Record
+     */
+    public function setChannel($channel)
+    {
+        $this->channel = $channel;
+        return $this;
+    }
 
     /**
      * @return mixed
@@ -62,12 +81,19 @@ class Record
         return $this;
     }
 
-    public function __construct(string $message, \DateTime $dateTime = null, $level = LogLevel::DEBUG, array $context = [], array $extra = [])
-    {
+    public function __construct(
+        string $channel,
+        string $message,
+        \DateTime $dateTime = null,
+        $level = LogLevel::DEBUG,
+        array $context = [],
+        array $extra = []
+    ) {
         if (!$dateTime) {
             $dateTime = new \DateTime();
         }
 
+        $this->channel  = $channel;
         $this->dateTime = $dateTime;
         $this->message  = $message;
         $this->context  = $context;
@@ -81,22 +107,17 @@ class Record
     public function toArray()
     {
         return [
+            'channel'  => $this->channel,
             'dateTime' => $this->dateTime,
+            'level'    => $this->level,
             'message'  => $this->message,
             'context'  => $this->context,
-            'level'    => $this->level,
             'extra'    => $this->extra,
         ];
     }
 
-    public function toJson($pretty = true)
+    public function toJson()
     {
-        $options = 0;
-
-        if ($pretty) {
-            $options = JSON_PRETTY_PRINT;
-        }
-
-        return json_encode($this->toArray(), $options);
+        return json_encode($this->toArray(), 0);
     }
 }
